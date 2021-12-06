@@ -6,11 +6,11 @@
 #    By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/08/16 14:58:03 by ocmarout          #+#    #+#              #
-#    Updated: 2021/11/20 17:31:23 by ocmarout         ###   ########.fr        #
+#    Updated: 2021/12/02 16:27:21 by ocmarout         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS		=	$(addprefix, philo.c)
+SRCS		=	philo.c
 
 NAME		=	philo
 
@@ -22,7 +22,7 @@ CC			=	clang
 
 MKDIR		=	mkdir -p
 
-CFLAGS		=	-Wall -Wextra -Werror ${INCLUDES}
+CFLAGS		=	-Wall -Wextra -Werror -pthread ${INCLUDES}
 
 INCLUDES	=	-I includes/
 
@@ -40,11 +40,9 @@ ${OBJS_DIR}%.o:	${SRCS_DIR}%.c | ${OBJS_DIR}
 		${CC} ${CFLAGS} -c $< -o ${@}
 
 clean:
-		make clean -C libft/
 		rm -rf ${OBJS_DIR}
 
 fclean: clean
-		make fclean -C libft/
 		rm -f ${NAME}
 
 re:		fclean ${OBJS_DIR} all
