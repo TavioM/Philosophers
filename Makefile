@@ -6,11 +6,14 @@
 #    By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/08/16 14:58:03 by ocmarout          #+#    #+#              #
-#    Updated: 2021/12/02 16:27:21 by ocmarout         ###   ########.fr        #
+#    Updated: 2021/12/07 14:23:02 by ocmarout         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS		=	philo.c
+SRCS		=	main.c	\
+				philo.c	\
+				utils.c	\
+				libft.c
 
 NAME		=	philo
 
@@ -45,7 +48,7 @@ clean:
 fclean: clean
 		rm -f ${NAME}
 
-re:		fclean ${OBJS_DIR} all
+re:		fclean all
 
 norme:
 		norminette ${SRCS}
