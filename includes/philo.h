@@ -6,7 +6,7 @@
 /*   By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/02 15:21:40 by ocmarout          #+#    #+#             */
-/*   Updated: 2021/12/07 13:15:33 by ocmarout         ###   ########.fr       */
+/*   Updated: 2021/12/07 20:41:50 by ocmarout         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,27 +27,31 @@ typedef struct s_mutex
 
 typedef struct s_args
 {
-	int		nb_philo;
-	int		time_to_die;
-	int		time_to_eat;
-	int		time_to_sleep;
-	int		max_meals;
-	long	start_time;
-	t_mutex	*forks;
-	t_mutex	write;
-	t_mutex	death_count;
+	int				nb_philo;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				max_meals;
+	long			start_time;
+	pthread_mutex_t	*forks;
+	pthread_mutex_t	read;
+	pthread_mutex_t	write;
+	pthread_mutex_t	mutex;
+	t_mutex			death_count;
 }				t_args;
 
 typedef struct s_philo
 {
 	int			id;
+	int			finished;
 	long		time_of_death;
 	t_args		*args;
 	pthread_t	thread;
 }				t_philo;
 
+void	print(t_args *args, t_philo *philo, char *str);
 long	gettime(void);
-void	my_usleep(int delay);
+void	my_usleep(int delay, t_args *args);
 int		ft_atoi(char const *str);
 void	trim_spaces(char *s);
 char	*ft_itoa(int n);

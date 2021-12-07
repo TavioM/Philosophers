@@ -6,7 +6,7 @@
 /*   By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 12:15:06 by ocmarout          #+#    #+#             */
-/*   Updated: 2021/12/07 14:25:24 by ocmarout         ###   ########.fr       */
+/*   Updated: 2021/12/07 20:23:01 by ocmarout         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,21 @@ int	ft_strcmp(char const *s1, char const *s2)
 	while (s1[i] && s2[i] && s1[i] == s2[i])
 		i++;
 	return ((unsigned char)s1[i] - s2[i]);
+}
+
+void	print(t_args *args, t_philo *philo, char *str)
+{
+	pthread_mutex_lock(&args->write);
+	if (str[0] == 'd' && !args->death_count.data)
+	{
+		printf("%ld %d %s\n", gettime() - args->start_time, philo->id, str);
+		(args->death_count.data)++;
+		pthread_mutex_unlock(&args->write);
+		return ;
+	}
+	if (!args->death_count.data)
+		printf("%ld %d %s\n", gettime() - args->start_time, philo->id, str);
+	pthread_mutex_unlock(&args->write);
 }
 
 int	check_entry(int *nb, char *str)
@@ -40,7 +55,6 @@ int	check_entry(int *nb, char *str)
 
 int	setup(int argc, char **argv, t_args *args)
 {
-	args->start_time = gettime();
 	if (argc != 5 && argc != 6)
 		return (1);
 	if (check_entry(&args->nb_philo, argv[1]))
@@ -73,13 +87,11 @@ int	main(int argc, char **argv)
 		printf("Parsing Error\n");
 		return (-1);
 	}
-	if (argc == 6)
-		args.max_meals = atoi(argv[5]);
 	philo = create_philos(&args);
 	check_death(&args, philo);
 	join_philos(philo, args.nb_philo);
 	while (i < args.nb_philo)
-		pthread_mutex_destroy(&args.forks[i++].mutex);
+		pthread_mutex_destroy(&args.forks[i++]);
 	free(philo);
 	free(args.forks);
 	return (0);
