@@ -6,7 +6,7 @@
 /*   By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/20 16:40:04 by ocmarout          #+#    #+#             */
-/*   Updated: 2021/12/08 16:53:04 by ocmarout         ###   ########.fr       */
+/*   Updated: 2021/12/08 21:12:39 by ocmarout         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,8 @@
 
 int	routine_loop(t_args *args, t_philo *philo)
 {
-	if (philo->id == args->nb_philo)
-		pthread_mutex_lock(&args->forks[philo->id - 1]);
-	else
-		pthread_mutex_lock(&args->forks[philo->id % args->nb_philo]);
-	print(args, philo, "has taken a fork");
+	pthread_mutex_lock(&args->forks[philo->id % args->nb_philo]);
+	print(args, philo, "has taken a fork left");
 	while (args->nb_philo == 1)
 	{
 		pthread_mutex_lock(&args->death_count.mutex);
@@ -27,17 +24,14 @@ int	routine_loop(t_args *args, t_philo *philo)
 		usleep(500);
 		pthread_mutex_unlock(&args->death_count.mutex);
 	}
-	if (philo->id == args->nb_philo)
-		pthread_mutex_lock(&args->forks[philo->id % args->nb_philo]);
-	else
-		pthread_mutex_lock(&args->forks[philo->id - 1]);
-	print(args, philo, "has taken a fork");
+	pthread_mutex_lock(&args->forks[philo->id - 1]);
+	print(args, philo, "has taken a fork right");
 	print(args, philo, "is eating");
 	update_death(args, philo, gettime());
 	my_usleep(args->time_to_eat, args);
+	print(args, philo, "is sleeping");
 	pthread_mutex_unlock(&args->forks[philo->id - 1]);
 	pthread_mutex_unlock(&args->forks[philo->id % args->nb_philo]);
-	print(args, philo, "is sleeping");
 	my_usleep(args->time_to_sleep, args);
 	print(args, philo, "is thinking");
 	return (0);
@@ -46,28 +40,24 @@ int	routine_loop(t_args *args, t_philo *philo)
 void	*routine(void *data)
 {
 	int		i;
-	long	death_count;
-	long	end;
 	t_args	*args;
 	t_philo	*philo;
 
 	i = 0;
-	end = 0;
 	philo = (t_philo *)data;
 	args = philo->args;
 	pthread_mutex_lock(&args->start);
 	pthread_mutex_unlock(&args->start);
 	update_death(args, philo, gettime());
 	my_usleep((args->time_to_eat / 2) * !(philo->id % 2), args);
-	death_count = get_mutex(&args->death_count);
 	while (!get_mutex(&args->death_count) && !get_mutex(&args->end_of_sim))
 	{
+		if (args->max_meals != -1 && i++ == args->max_meals)
+			set_mutex(&args->done_eating, get_mutex(&args->done_eating) + 1);
+		if (get_mutex(&args->done_eating) == args->nb_philo)
+			return (0);
 		if (routine_loop(args, philo) == 1)
 			return (0);
-		if (args->max_meals != -1 && i++ == args->max_meals)
-			set_mutex(&philo->finished, 1);
-		death_count = get_mutex(&args->death_count);
-		end = get_mutex(&args->end_of_sim);
 	}
 	return (0);
 }
@@ -92,12 +82,9 @@ t_philo	*create_philos(t_args *args)
 	{
 		philo[i].id = i + 1;
 		philo[i].args = args;
-		philo[i].finished.data = 0;
-		pthread_mutex_init(&philo[i].finished.mutex, NULL);
 		pthread_mutex_init(&philo[i].time_of_death.mutex, NULL);
 		pthread_create(&philo[i].thread, NULL, &routine, &philo[i]);
-		pthread_mutex_init(&args->forks[i], NULL);
-		i++;
+		pthread_mutex_init(&args->forks[i++], NULL);
 	}
 	args->start_time = gettime();
 	pthread_mutex_unlock(&args->start);
@@ -107,26 +94,23 @@ t_philo	*create_philos(t_args *args)
 void	check_death(t_args *args, t_philo *philo)
 {
 	int	i;
-	int	end;
 
 	my_usleep(args->time_to_die, args);
 	while (!get_mutex(&args->death_count) && !get_mutex(&args->end_of_sim))
 	{
 		i = 0;
-		end = 0;
 		while (i < args->nb_philo)
 		{
 			if (get_mutex(&philo[i].time_of_death) < gettime())
 				print(args, &philo[i], "died");
-			end += get_mutex(&philo[1].finished);
 			i++;
 		}
-		if (end == args->nb_philo)
+		if (get_mutex(&args->done_eating) == args->nb_philo)
 		{
 			set_mutex(&args->end_of_sim, 1);
 			return ;
 		}
-		usleep(500);
+		usleep(50);
 	}
 }
 

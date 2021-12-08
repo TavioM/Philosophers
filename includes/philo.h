@@ -6,7 +6,7 @@
 /*   By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/02 15:21:40 by ocmarout          #+#    #+#             */
-/*   Updated: 2021/12/08 16:48:15 by ocmarout         ###   ########.fr       */
+/*   Updated: 2021/12/08 18:22:14 by ocmarout         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct s_args
 	pthread_mutex_t	start;
 	t_mutex			death_count;
 	t_mutex			end_of_sim;
+	t_mutex			done_eating;
 }				t_args;
 
 typedef struct s_philo

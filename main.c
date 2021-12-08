@@ -6,7 +6,7 @@
 /*   By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 12:15:06 by ocmarout          #+#    #+#             */
-/*   Updated: 2021/12/08 16:48:55 by ocmarout         ###   ########.fr       */
+/*   Updated: 2021/12/08 20:44:55 by ocmarout         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,19 +68,20 @@ int	setup(int argc, char **argv, t_args *args)
 		return (1);
 	if (check_entry(&args->time_to_sleep, argv[4]))
 		return (1);
+	args->max_meals = -1;
 	if (argc == 6)
 	{
 		if (check_entry(&args->max_meals, argv[5]))
 			return (1);
 	}
-	else
-		args->max_meals = -1;
 	pthread_mutex_init(&args->start, NULL);
 	pthread_mutex_init(&args->write, NULL);
 	args->death_count.data = 0;
 	pthread_mutex_init(&args->death_count.mutex, NULL);
 	args->end_of_sim.data = 0;
 	pthread_mutex_init(&args->end_of_sim.mutex, NULL);
+	args->done_eating.data = 0;
+	pthread_mutex_init(&args->done_eating.mutex, NULL);
 	return (0);
 }
 
