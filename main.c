@@ -6,7 +6,7 @@
 /*   By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 12:15:06 by ocmarout          #+#    #+#             */
-/*   Updated: 2021/12/08 16:33:14 by ocmarout         ###   ########.fr       */
+/*   Updated: 2021/12/08 16:48:55 by ocmarout         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,8 @@ int	setup(int argc, char **argv, t_args *args)
 	pthread_mutex_init(&args->write, NULL);
 	args->death_count.data = 0;
 	pthread_mutex_init(&args->death_count.mutex, NULL);
-	args->end_of_simulation.data = 0;
-	pthread_mutex_init(&args->end_of_simulation.mutex, NULL);
+	args->end_of_sim.data = 0;
+	pthread_mutex_init(&args->end_of_sim.mutex, NULL);
 	return (0);
 }
 
@@ -92,7 +92,7 @@ void	destroyer(t_args *args, t_philo *philo)
 	pthread_mutex_destroy(&args->start);
 	pthread_mutex_destroy(&args->write);
 	pthread_mutex_destroy(&args->death_count.mutex);
-	pthread_mutex_destroy(&args->end_of_simulation.mutex);
+	pthread_mutex_destroy(&args->end_of_sim.mutex);
 	while (i < args->nb_philo)
 		pthread_mutex_destroy(&args->forks[i++]);
 	free(args->forks);

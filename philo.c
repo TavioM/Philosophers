@@ -6,7 +6,7 @@
 /*   By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/20 16:40:04 by ocmarout          #+#    #+#             */
-/*   Updated: 2021/12/08 16:41:59 by ocmarout         ###   ########.fr       */
+/*   Updated: 2021/12/08 16:53:04 by ocmarout         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,14 +60,14 @@ void	*routine(void *data)
 	update_death(args, philo, gettime());
 	my_usleep((args->time_to_eat / 2) * !(philo->id % 2), args);
 	death_count = get_mutex(&args->death_count);
-	while (!death_count || !end)
+	while (!get_mutex(&args->death_count) && !get_mutex(&args->end_of_sim))
 	{
 		if (routine_loop(args, philo) == 1)
 			return (0);
 		if (args->max_meals != -1 && i++ == args->max_meals)
 			set_mutex(&philo->finished, 1);
 		death_count = get_mutex(&args->death_count);
-		end = get_mutex(&args->end_of_simulation);
+		end = get_mutex(&args->end_of_sim);
 	}
 	return (0);
 }
@@ -106,11 +106,11 @@ t_philo	*create_philos(t_args *args)
 
 void	check_death(t_args *args, t_philo *philo)
 {
-	int		i;
-	long	end;
+	int	i;
+	int	end;
 
 	my_usleep(args->time_to_die, args);
-	while (!get_mutex(&args->death_count) && !get_mutex(&args->end_of_simulation))
+	while (!get_mutex(&args->death_count) && !get_mutex(&args->end_of_sim))
 	{
 		i = 0;
 		end = 0;
@@ -123,7 +123,7 @@ void	check_death(t_args *args, t_philo *philo)
 		}
 		if (end == args->nb_philo)
 		{
-			set_mutex(&args->end_of_simulation, 1);
+			set_mutex(&args->end_of_sim, 1);
 			return ;
 		}
 		usleep(500);
