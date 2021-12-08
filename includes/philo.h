@@ -6,7 +6,7 @@
 /*   By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/02 15:21:40 by ocmarout          #+#    #+#             */
-/*   Updated: 2021/12/07 20:41:50 by ocmarout         ###   ########.fr       */
+/*   Updated: 2021/12/08 16:10:57 by ocmarout         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 
 typedef struct s_mutex
 {
-	int				data;
+	long			data;
 	pthread_mutex_t	mutex;
 }				t_mutex;
 
@@ -34,21 +34,24 @@ typedef struct s_args
 	int				max_meals;
 	long			start_time;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	read;
 	pthread_mutex_t	write;
-	pthread_mutex_t	mutex;
+	pthread_mutex_t	start;
 	t_mutex			death_count;
+	t_mutex			end_of_simulation;
 }				t_args;
 
 typedef struct s_philo
 {
 	int			id;
-	int			finished;
-	long		time_of_death;
 	t_args		*args;
+	t_mutex		finished;
+	t_mutex		time_of_death;
 	pthread_t	thread;
 }				t_philo;
 
+void	set_mutex(t_mutex *mutex, long value);
+long	get_mutex(t_mutex *mutex);
+void	update_death(t_args *args, t_philo *philo, long value);
 void	print(t_args *args, t_philo *philo, char *str);
 long	gettime(void);
 void	my_usleep(int delay, t_args *args);

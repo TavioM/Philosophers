@@ -6,7 +6,7 @@
 #    By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/08/16 14:58:03 by ocmarout          #+#    #+#              #
-#    Updated: 2021/12/07 14:23:02 by ocmarout         ###   ########.fr        #
+#    Updated: 2021/12/08 15:44:45 by ocmarout         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,18 +29,22 @@ CFLAGS		=	-Wall -Wextra -Werror -pthread ${INCLUDES}
 
 INCLUDES	=	-I includes/
 
+DEPF		= -MMD
+
+DEP			= $(OBJS:.o=.d)
+
 all:		${NAME}
 
 bonus:		all
 
 ${NAME}:	$(addprefix ${OBJS_DIR}, ${OBJS})
-		$(CC) -o $@ $^ ${CFLAGS}
+		$(CC) $(DEPF) -o $@ $^ ${CFLAGS}
 
 ${OBJS_DIR}:
 		${MKDIR} ${OBJS_DIR}
 
 ${OBJS_DIR}%.o:	${SRCS_DIR}%.c | ${OBJS_DIR}
-		${CC} ${CFLAGS} -c $< -o ${@}
+		${CC} $(DEPF) ${CFLAGS} -c $< -o ${@}
 
 clean:
 		rm -rf ${OBJS_DIR}
@@ -52,3 +56,7 @@ re:		fclean all
 
 norme:
 		norminette ${SRCS}
+
+-include $(addprefix ${OBJS_DIR}, ${DEP})
+
+.PHONY:	all clean fclean re bonus norme

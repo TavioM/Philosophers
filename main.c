@@ -6,7 +6,7 @@
 /*   By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 12:15:06 by ocmarout          #+#    #+#             */
-/*   Updated: 2021/12/07 20:23:01 by ocmarout         ###   ########.fr       */
+/*   Updated: 2021/12/08 16:33:14 by ocmarout         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,18 @@ int	ft_strcmp(char const *s1, char const *s2)
 
 void	print(t_args *args, t_philo *philo, char *str)
 {
+	int	death_count;
+
 	pthread_mutex_lock(&args->write);
-	if (str[0] == 'd' && !args->death_count.data)
+	death_count = get_mutex(&args->death_count);
+	if (str[0] == 'd' && !death_count)
 	{
 		printf("%ld %d %s\n", gettime() - args->start_time, philo->id, str);
-		(args->death_count.data)++;
+		set_mutex(&args->death_count, death_count + 1);
 		pthread_mutex_unlock(&args->write);
 		return ;
 	}
-	if (!args->death_count.data)
+	if (!death_count)
 		printf("%ld %d %s\n", gettime() - args->start_time, philo->id, str);
 	pthread_mutex_unlock(&args->write);
 }
@@ -71,8 +74,29 @@ int	setup(int argc, char **argv, t_args *args)
 			return (1);
 	}
 	else
-		args->max_meals = 2147483647;
+		args->max_meals = -1;
+	pthread_mutex_init(&args->start, NULL);
+	pthread_mutex_init(&args->write, NULL);
+	args->death_count.data = 0;
+	pthread_mutex_init(&args->death_count.mutex, NULL);
+	args->end_of_simulation.data = 0;
+	pthread_mutex_init(&args->end_of_simulation.mutex, NULL);
 	return (0);
+}
+
+void	destroyer(t_args *args, t_philo *philo)
+{
+	int	i;
+
+	i = 0;
+	pthread_mutex_destroy(&args->start);
+	pthread_mutex_destroy(&args->write);
+	pthread_mutex_destroy(&args->death_count.mutex);
+	pthread_mutex_destroy(&args->end_of_simulation.mutex);
+	while (i < args->nb_philo)
+		pthread_mutex_destroy(&args->forks[i++]);
+	free(args->forks);
+	free(philo);
 }
 
 int	main(int argc, char **argv)
@@ -90,9 +114,6 @@ int	main(int argc, char **argv)
 	philo = create_philos(&args);
 	check_death(&args, philo);
 	join_philos(philo, args.nb_philo);
-	while (i < args.nb_philo)
-		pthread_mutex_destroy(&args.forks[i++]);
-	free(philo);
-	free(args.forks);
+	destroyer(&args, philo);
 	return (0);
 }
