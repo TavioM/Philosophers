@@ -6,7 +6,7 @@
 #    By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/08/16 14:58:03 by ocmarout          #+#    #+#              #
-#    Updated: 2021/12/08 15:44:45 by ocmarout         ###   ########.fr        #
+#    Updated: 2021/12/08 22:38:44 by ocmarout         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,6 +55,7 @@ fclean: clean
 re:		fclean all
 
 norme:
+		norminette includes/
 		norminette ${SRCS}
 
 -include $(addprefix ${OBJS_DIR}, ${DEP})

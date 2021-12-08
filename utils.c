@@ -6,7 +6,7 @@
 /*   By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 13:12:51 by ocmarout          #+#    #+#             */
-/*   Updated: 2021/12/08 16:11:05 by ocmarout         ###   ########.fr       */
+/*   Updated: 2021/12/08 22:36:12 by ocmarout         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,22 @@ long	get_mutex(t_mutex *mutex)
 	return (value);
 }
 
-void	update_death(t_args *args, t_philo *philo, long value)
+void	print(t_args *args, t_philo *philo, char *str)
 {
-	pthread_mutex_lock(&philo->time_of_death.mutex);
-	philo->time_of_death.data = value + args->time_to_die;
-	pthread_mutex_unlock(&philo->time_of_death.mutex);
+	int	death_count;
+
+	pthread_mutex_lock(&args->write);
+	death_count = get_mutex(&args->death_count);
+	if (str[0] == 'd' && !death_count)
+	{
+		printf("%ld %d %s\n", gettime() - args->start_time, philo->id, str);
+		set_mutex(&args->death_count, death_count + 1);
+		pthread_mutex_unlock(&args->write);
+		return ;
+	}
+	if (!death_count)
+		printf("%ld %d %s\n", gettime() - args->start_time, philo->id, str);
+	pthread_mutex_unlock(&args->write);
 }
 
 long	gettime(void)

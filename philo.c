@@ -6,7 +6,7 @@
 /*   By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/20 16:40:04 by ocmarout          #+#    #+#             */
-/*   Updated: 2021/12/08 21:12:39 by ocmarout         ###   ########.fr       */
+/*   Updated: 2021/12/08 22:30:54 by ocmarout         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	routine_loop(t_args *args, t_philo *philo)
 	pthread_mutex_lock(&args->forks[philo->id - 1]);
 	print(args, philo, "has taken a fork right");
 	print(args, philo, "is eating");
-	update_death(args, philo, gettime());
+	set_mutex(&philo->time_of_death, gettime() + args->time_to_die);
 	my_usleep(args->time_to_eat, args);
 	print(args, philo, "is sleeping");
 	pthread_mutex_unlock(&args->forks[philo->id - 1]);
@@ -48,7 +48,7 @@ void	*routine(void *data)
 	args = philo->args;
 	pthread_mutex_lock(&args->start);
 	pthread_mutex_unlock(&args->start);
-	update_death(args, philo, gettime());
+	set_mutex(&philo->time_of_death, gettime() + args->time_to_die);
 	my_usleep((args->time_to_eat / 2) * !(philo->id % 2), args);
 	while (!get_mutex(&args->death_count) && !get_mutex(&args->end_of_sim))
 	{

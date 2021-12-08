@@ -6,7 +6,7 @@
 /*   By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 12:15:06 by ocmarout          #+#    #+#             */
-/*   Updated: 2021/12/08 20:44:55 by ocmarout         ###   ########.fr       */
+/*   Updated: 2021/12/08 22:33:45 by ocmarout         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,24 +20,6 @@ int	ft_strcmp(char const *s1, char const *s2)
 	while (s1[i] && s2[i] && s1[i] == s2[i])
 		i++;
 	return ((unsigned char)s1[i] - s2[i]);
-}
-
-void	print(t_args *args, t_philo *philo, char *str)
-{
-	int	death_count;
-
-	pthread_mutex_lock(&args->write);
-	death_count = get_mutex(&args->death_count);
-	if (str[0] == 'd' && !death_count)
-	{
-		printf("%ld %d %s\n", gettime() - args->start_time, philo->id, str);
-		set_mutex(&args->death_count, death_count + 1);
-		pthread_mutex_unlock(&args->write);
-		return ;
-	}
-	if (!death_count)
-		printf("%ld %d %s\n", gettime() - args->start_time, philo->id, str);
-	pthread_mutex_unlock(&args->write);
 }
 
 int	check_entry(int *nb, char *str)
