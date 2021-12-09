@@ -6,7 +6,7 @@
 /*   By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/20 16:40:04 by ocmarout          #+#    #+#             */
-/*   Updated: 2021/12/08 22:30:54 by ocmarout         ###   ########.fr       */
+/*   Updated: 2021/12/09 16:48:59 by ocmarout         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,14 @@
 
 int	routine_loop(t_args *args, t_philo *philo)
 {
-	pthread_mutex_lock(&args->forks[philo->id % args->nb_philo]);
-	print(args, philo, "has taken a fork left");
 	while (args->nb_philo == 1)
 	{
-		pthread_mutex_lock(&args->death_count.mutex);
-		if (args->death_count.data)
+		if (get_mutex(&args->death_count))
 			return (1);
 		usleep(500);
-		pthread_mutex_unlock(&args->death_count.mutex);
 	}
+	pthread_mutex_lock(&args->forks[philo->id % args->nb_philo]);
+	print(args, philo, "has taken a fork left");
 	pthread_mutex_lock(&args->forks[philo->id - 1]);
 	print(args, philo, "has taken a fork right");
 	print(args, philo, "is eating");

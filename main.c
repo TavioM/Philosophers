@@ -6,7 +6,7 @@
 /*   By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 12:15:06 by ocmarout          #+#    #+#             */
-/*   Updated: 2021/12/08 22:33:45 by ocmarout         ###   ########.fr       */
+/*   Updated: 2021/12/09 16:37:33 by ocmarout         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,11 +84,9 @@ void	destroyer(t_args *args, t_philo *philo)
 
 int	main(int argc, char **argv)
 {
-	int		i;
 	t_args	args;
 	t_philo	*philo;
 
-	i = 0;
 	if (setup(argc, argv, &args))
 	{
 		printf("Parsing Error\n");
