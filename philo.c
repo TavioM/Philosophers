@@ -6,7 +6,7 @@
 /*   By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/20 16:40:04 by ocmarout          #+#    #+#             */
-/*   Updated: 2021/12/09 16:48:59 by ocmarout         ###   ########.fr       */
+/*   Updated: 2021/12/10 11:10:41 by ocmarout         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ int	routine_loop(t_args *args, t_philo *philo)
 		usleep(500);
 	}
 	pthread_mutex_lock(&args->forks[philo->id % args->nb_philo]);
-	print(args, philo, "has taken a fork left");
+	print(args, philo, "has taken a fork");
 	pthread_mutex_lock(&args->forks[philo->id - 1]);
-	print(args, philo, "has taken a fork right");
+	print(args, philo, "has taken a fork");
 	print(args, philo, "is eating");
 	set_mutex(&philo->time_of_death, gettime() + args->time_to_die);
 	my_usleep(args->time_to_eat, args);
