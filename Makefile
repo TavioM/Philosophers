@@ -6,14 +6,15 @@
 #    By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/08/16 14:58:03 by ocmarout          #+#    #+#              #
-#    Updated: 2021/12/08 22:38:44 by ocmarout         ###   ########.fr        #
+#    Updated: 2021/12/10 14:49:04 by ocmarout         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRCS		=	main.c	\
 				philo.c	\
 				utils.c	\
-				libft.c
+				libft.c	\
+				libft2.c
 
 NAME		=	philo
 
