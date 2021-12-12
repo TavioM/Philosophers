@@ -6,21 +6,11 @@
 /*   By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 12:15:06 by ocmarout          #+#    #+#             */
-/*   Updated: 2021/12/09 16:37:33 by ocmarout         ###   ########.fr       */
+/*   Updated: 2021/12/10 20:26:22 by ocmarout         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int	ft_strcmp(char const *s1, char const *s2)
-{
-	unsigned int	i;
-
-	i = 0;
-	while (s1[i] && s2[i] && s1[i] == s2[i])
-		i++;
-	return ((unsigned char)s1[i] - s2[i]);
-}
 
 int	check_entry(int *nb, char *str)
 {
@@ -80,6 +70,29 @@ void	destroyer(t_args *args, t_philo *philo)
 		pthread_mutex_destroy(&args->forks[i++]);
 	free(args->forks);
 	free(philo);
+}
+
+void	check_death(t_args *args, t_philo *philo)
+{
+	int	i;
+
+	my_usleep(args->time_to_die, args);
+	while (!get_mutex(&args->death_count) && !get_mutex(&args->end_of_sim))
+	{
+		i = 0;
+		while (i < args->nb_philo)
+		{
+			if (get_mutex(&philo[i].time_of_death) < gettime())
+				print(args, &philo[i], "died");
+			i++;
+		}
+		if (get_mutex(&args->done_eating) == args->nb_philo)
+		{
+			set_mutex(&args->end_of_sim, 1);
+			return ;
+		}
+		usleep(50);
+	}
 }
 
 int	main(int argc, char **argv)
