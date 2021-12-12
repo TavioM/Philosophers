@@ -6,7 +6,7 @@
 /*   By: ocmarout <ocmarout@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/02 15:21:40 by ocmarout          #+#    #+#             */
-/*   Updated: 2021/12/08 22:36:20 by ocmarout         ###   ########.fr       */
+/*   Updated: 2021/12/10 14:56:26 by ocmarout         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,10 @@ typedef struct s_args
 
 typedef struct s_philo
 {
-	int			id;
-	t_args		*args;
-	t_mutex		time_of_death;
-	pthread_t	thread;
+	int				id;
+	t_args			*args;
+	t_mutex			time_of_death;
+	pthread_t		thread;
 }				t_philo;
 
 void	set_mutex(t_mutex *mutex, long value);
